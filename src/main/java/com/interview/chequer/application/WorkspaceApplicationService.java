@@ -16,92 +16,82 @@ public class WorkspaceApplicationService {
     final private UserRepository userRepository;
     final private WorkspaceMemberRepository workspaceMemberRepository;
 
-    final private ValidationService validationService;
+    final private WorkspaceService workspaceService;
+    final private WorkspaceMemberService workspaceMemberService;
 
     @Transactional
     public CreateWorkspaceResponse createWorkspace(long userId, String workspaceName) {
-        validationService.validateWorkspaceCount(userId);
-        validationService.validateWorkspaceName(workspaceName);
+        User owner = getUser(userId);
 
-        Workspace workspace = workspaceRepository.save(
-                Workspace.builder()
-                        .ownerId(userId)
-                        .name(workspaceName)
-                        .build()
-        );
+        Workspace workspace = workspaceService.create(owner, workspaceName);
+        workspaceRepository.save(workspace);
 
         return new CreateWorkspaceResponse(workspace);
     }
 
     @Transactional
     public EditWorkspaceNameResponse editWorkspaceName(long workspaceId, String workspaceName) {
-        validationService.validateWorkspaceName(workspaceName);
-
-        Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+        Workspace workspace = getWorkspace(workspaceId);
 
         workspace.changeName(workspaceName);
-        Workspace renamedWorkspace = workspaceRepository.save(workspace);
+        workspaceRepository.save(workspace);
 
-        return new EditWorkspaceNameResponse(renamedWorkspace);
+        return new EditWorkspaceNameResponse(workspace);
     }
 
     @Transactional
     public AddMemberResponse addMember(long workspaceId, long memberId) {
-        Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
-        User user = userRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+        Workspace workspace = getWorkspace(workspaceId);
+        User member = getUser(memberId);
 
-        List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.findAllByWorkspaceId(workspaceId);
-        if (workspaceMembers.size() >= 10) {
-            throw new IllegalArgumentException("");
-        }
+        WorkspaceMember workspaceMember = workspaceMemberService.addWorkspaceMember(workspace, member);
+        workspaceMemberRepository.save(workspaceMember);
 
-        workspaceMemberRepository.save(
-                WorkspaceMember.builder()
-                        .workspace(workspace)
-                        .member(user)
-                        .build()
-        );
-
-        workspaceMembers = workspaceMemberRepository.findAllByWorkspaceId(workspaceId);
-
-        return new AddMemberResponse(workspaceId, memberId, workspaceMembers.size());
+        return new AddMemberResponse(workspaceId, memberId, getMemberCount(workspaceId));
     }
 
     @Transactional
     public RemoveMemberResponse removeMember(long workspaceId, long memberId) {
-        if (!workspaceRepository.existsById(workspaceId)) {
-            throw new IllegalArgumentException("");
-        }
-        if (!userRepository.existsById(memberId)) {
-            throw new IllegalArgumentException("");
-        }
-
-        WorkspaceMember workspaceMember = workspaceMemberRepository.findByWorkspaceIdAndMemberId(workspaceId, memberId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+        WorkspaceMember workspaceMember = getWorkspaceMember(workspaceId, memberId);
 
         workspaceMemberRepository.delete(workspaceMember);
 
-        List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.findAllByWorkspaceId(workspaceId);
-
-        return new RemoveMemberResponse(workspaceId, memberId, workspaceMembers.size());
+        return new RemoveMemberResponse(workspaceId, memberId, getMemberCount(workspaceId));
     }
 
     @Transactional
     public MemberListResponse getMemberList(long workspaceId) {
-        if (!workspaceRepository.existsById(workspaceId)) {
-            throw new IllegalArgumentException("");
-        }
+        Workspace workspace = getWorkspace(workspaceId);
 
-        List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.findAllByWorkspaceId(workspaceId);
+        List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.findAllByWorkspaceId(workspace.getId());
 
         return new MemberListResponse(
                 workspaceId,
                 workspaceMembers.stream()
-                        .map(m -> m.getMember().getId())
+                        .map(WorkspaceMember::getMemberId)
                         .collect(Collectors.toList())
         );
+    }
+
+    private Workspace getWorkspace(long workspaceId) {
+        return workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Can not find workspace with id %s.", workspaceId)));
+    }
+
+    private User getUser(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Can not find user with id %s.", userId)));
+    }
+
+    private int getMemberCount(long workspaceId) {
+        return workspaceMemberRepository.countAllByWorkspaceId(workspaceId);
+    }
+
+    private WorkspaceMember getWorkspaceMember(long workspaceId, long userId) {
+        Workspace workspace = getWorkspace(workspaceId);
+        User member = getUser(userId);
+
+        return workspaceMemberRepository.findByWorkspaceIdAndMemberId(workspace.getId(), member.getId())
+                .orElseThrow(() -> new IllegalStateException("That user is not added to workspace."));
     }
 }

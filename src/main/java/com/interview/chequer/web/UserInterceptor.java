@@ -1,6 +1,6 @@
 package com.interview.chequer.web;
 
-import com.interview.chequer.domain.ValidationService;
+import com.interview.chequer.domain.AuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class UserInterceptor extends HandlerInterceptorAdapter {
-    final private ValidationService validationService;
+    final private AuthorizationService authorizationService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -22,7 +22,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         long workspaceId = Long.parseLong((String) pathVariables.get("workspaceId"));
 
-        validationService.validateWorkspaceOwner(userId, workspaceId);
+        authorizationService.validateWorkspaceOwner(userId, workspaceId);
 
         return super.preHandle(request, response, handler);
     }

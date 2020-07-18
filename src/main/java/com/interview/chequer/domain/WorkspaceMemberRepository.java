@@ -7,5 +7,10 @@ import java.util.Optional;
 
 public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember, Long> {
     Optional<WorkspaceMember> findByWorkspaceIdAndMemberId(long workspaceId, long memberId);
+
     List<WorkspaceMember> findAllByWorkspaceId(long workspaceId);
+
+    Boolean existsByWorkspaceIdAndMemberId(long workspaceId, long memberId);
+
+    int countAllByWorkspaceId(long workspaceId);
 }

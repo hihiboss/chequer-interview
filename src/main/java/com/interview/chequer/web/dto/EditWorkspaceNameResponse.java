@@ -7,11 +7,9 @@ import lombok.Getter;
 public class EditWorkspaceNameResponse {
     private long workspaceId;
     private String workspaceName;
-    private long ownerId;
 
     public EditWorkspaceNameResponse(Workspace entity) {
         this.workspaceId = entity.getId();
         this.workspaceName = entity.getName();
-        this.ownerId = entity.getOwnerId();
     }
 }

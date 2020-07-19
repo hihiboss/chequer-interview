@@ -63,12 +63,13 @@ public class WorkspaceApplicationService {
     public MemberListResponse getMemberList(long workspaceId) {
         Workspace workspace = getWorkspace(workspaceId);
 
-        List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.findAllByWorkspaceId(workspace.getId());
+        List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.findAllByWorkspace(workspace);
 
         return new MemberListResponse(
                 workspaceId,
                 workspaceMembers.stream()
-                        .map(WorkspaceMember::getMemberId)
+                        .map(WorkspaceMember::getMember)
+                        .map(User::getId)
                         .collect(Collectors.toList())
         );
     }
@@ -84,14 +85,15 @@ public class WorkspaceApplicationService {
     }
 
     private int getMemberCount(long workspaceId) {
-        return workspaceMemberRepository.countAllByWorkspaceId(workspaceId);
+        Workspace workspace = getWorkspace(workspaceId);
+        return workspaceMemberRepository.countAllByWorkspace(workspace);
     }
 
     private WorkspaceMember getWorkspaceMember(long workspaceId, long userId) {
         Workspace workspace = getWorkspace(workspaceId);
         User member = getUser(userId);
 
-        return workspaceMemberRepository.findByWorkspaceIdAndMemberId(workspace.getId(), member.getId())
+        return workspaceMemberRepository.findByWorkspaceAndMember(workspace, member)
                 .orElseThrow(() -> new IllegalStateException("That user is not added to workspace."));
     }
 }

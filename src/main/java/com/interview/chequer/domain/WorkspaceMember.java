@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Table(name = "workspace_member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Getter
 @Builder
 public class WorkspaceMember {
     @Id
@@ -22,12 +23,4 @@ public class WorkspaceMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
-
-    public long getMemberId() {
-        return this.member.getId();
-    }
-
-    public long getWorkspaceId() {
-        return this.workspace.getId();
-    }
 }

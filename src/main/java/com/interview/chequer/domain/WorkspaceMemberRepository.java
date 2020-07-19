@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember, Long> {
-    Optional<WorkspaceMember> findByWorkspaceIdAndMemberId(long workspaceId, long memberId);
+    Optional<WorkspaceMember> findByWorkspaceAndMember(Workspace workspace, User member);
 
-    List<WorkspaceMember> findAllByWorkspaceId(long workspaceId);
+    List<WorkspaceMember> findAllByWorkspace(Workspace workspace);
 
-    Boolean existsByWorkspaceIdAndMemberId(long workspaceId, long memberId);
+    Boolean existsByWorkspaceAndMember(Workspace workspace, User member);
 
-    int countAllByWorkspaceId(long workspaceId);
+    int countAllByWorkspace(Workspace workspace);
 }

@@ -21,16 +21,13 @@ public class WorkspaceMemberService {
     }
 
     private void validateUser(WorkspaceMember workspaceMember) {
-        long workspaceId = workspaceMember.getWorkspaceId();
-        long userId = workspaceMember.getMemberId();
-
-        if (workspaceMemberRepository.existsByWorkspaceIdAndMemberId(workspaceId, userId)) {
+        if (workspaceMemberRepository.existsByWorkspaceAndMember(workspaceMember.getWorkspace(), workspaceMember.getMember())) {
             throw new IllegalStateException("That user is already added to workspace.");
         }
     }
 
     private void validateMemberCount(WorkspaceMember workspaceMember) {
-        if (workspaceMemberRepository.countAllByWorkspaceId(workspaceMember.getWorkspaceId()) >= 10) {
+        if (workspaceMemberRepository.countAllByWorkspace(workspaceMember.getWorkspace()) >= 10) {
             throw new IllegalStateException("Workspace can have 10 members at most.");
         }
     }

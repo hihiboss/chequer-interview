@@ -1,5 +1,6 @@
 package com.interview.chequer.domain;
 
+import com.interview.chequer.domain.exception.ValidationException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +26,7 @@ public class Workspace {
 
     public void validate() {
         if (this.hasTooLongName()) {
-            throw new IllegalArgumentException("Workspace name should be less than 500 characters.");
+            throw new ValidationException("Workspace name should be less than 500 characters.");
         }
     }
 

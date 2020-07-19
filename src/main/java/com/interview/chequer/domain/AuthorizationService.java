@@ -1,5 +1,7 @@
 package com.interview.chequer.domain;
 
+import com.interview.chequer.domain.exception.NotFoundException;
+import com.interview.chequer.domain.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +12,10 @@ public class AuthorizationService {
 
     public void validateWorkspaceOwner(long userId, long workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Can not find workspace with id %s.", workspaceId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Can not find workspace with id %s.", workspaceId)));
 
         if (!workspace.isOwner(userId)) {
-            throw new IllegalArgumentException("You are not the owner of workspace.");
+            throw new UnauthorizedException("You are not the owner of workspace.");
         }
     }
 }

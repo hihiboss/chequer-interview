@@ -1,5 +1,6 @@
 package com.interview.chequer.domain;
 
+import com.interview.chequer.domain.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class WorkspaceService {
 
     private void validateWorkspaceCount(Workspace workspace) {
         if (workspaceRepository.countAllByOwnerId(workspace.getOwnerId()) >= 5) {
-            throw new IllegalStateException("User can have 5 workspaces at most.");
+            throw new ValidationException("User can have 5 workspaces at most.");
         }
     }
 }

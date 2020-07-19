@@ -1,5 +1,7 @@
 package com.interview.chequer.domain;
 
+import com.interview.chequer.domain.exception.AlreadyExistingException;
+import com.interview.chequer.domain.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +24,13 @@ public class WorkspaceMemberService {
 
     private void validateUser(WorkspaceMember workspaceMember) {
         if (workspaceMemberRepository.existsByWorkspaceAndMember(workspaceMember.getWorkspace(), workspaceMember.getMember())) {
-            throw new IllegalStateException("That user is already added to workspace.");
+            throw new AlreadyExistingException("That user is already added to workspace.");
         }
     }
 
     private void validateMemberCount(WorkspaceMember workspaceMember) {
         if (workspaceMemberRepository.countAllByWorkspace(workspaceMember.getWorkspace()) >= 10) {
-            throw new IllegalStateException("Workspace can have 10 members at most.");
+            throw new ValidationException("Workspace can have 10 members at most.");
         }
     }
 }

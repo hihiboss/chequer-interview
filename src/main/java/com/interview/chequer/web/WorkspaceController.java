@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/workspaces")
+@RequestMapping("/api/v1/workspaces")
 @RequiredArgsConstructor
 public class WorkspaceController {
     final private WorkspaceApplicationService workspaceApplicationService;
@@ -14,27 +14,27 @@ public class WorkspaceController {
     @PostMapping()
     public CreateWorkspaceResponse createWorkspace(
             @RequestParam("userId") long userId,
-            @RequestBody String workspaceName
+            @RequestBody CreateWorkspaceRequest request
     ) {
-        return workspaceApplicationService.createWorkspace(userId, workspaceName);
+        return workspaceApplicationService.createWorkspace(userId, request);
     }
 
-    @PutMapping("{workspaceId}")
+    @PatchMapping("{workspaceId}")
     public EditWorkspaceNameResponse editWorkspaceName(
             @PathVariable long workspaceId,
             @RequestParam("userId") long userId,
-            @RequestBody String workspaceName
+            @RequestBody EditWorkspaceNameRequest request
     ) {
-        return workspaceApplicationService.editWorkspaceName(workspaceId, workspaceName);
+        return workspaceApplicationService.editWorkspaceName(workspaceId, request);
     }
 
     @PostMapping("{workspaceId}/members")
     public AddMemberResponse addMemberToWorkspace(
             @PathVariable long workspaceId,
             @RequestParam("userId") long userId,
-            @RequestBody long memberId
+            @RequestBody AddMemberRequest request
     ) {
-        return workspaceApplicationService.addMember(workspaceId, memberId);
+        return workspaceApplicationService.addMember(workspaceId, request);
     }
 
     @DeleteMapping("{workspaceId}/members/{memberId}")

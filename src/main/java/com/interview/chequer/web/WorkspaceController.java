@@ -48,8 +48,7 @@ public class WorkspaceController {
 
     @GetMapping("{workspaceId}/members")
     public MemberListResponse getMembersOfWorkspace(
-            @PathVariable long workspaceId,
-            @RequestParam("userId") long userId
+            @PathVariable long workspaceId
     ) {
         return workspaceApplicationService.getMemberList(workspaceId);
     }

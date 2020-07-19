@@ -121,8 +121,8 @@ Creates workspace with workspace name. The workspace name can be 500 characters 
 
   - Code: 200
     
-  Content: 
-    
+    Content: 
+  
     ```json
     {
       "ownerId": 1,
@@ -135,27 +135,27 @@ Creates workspace with workspace name. The workspace name can be 500 characters 
 
   - Code: 400 BAD REQUEST
     
-Content:
+    Content:
     
     ```json
     {
       "message": "User can have 5 workspaces at most."
     }
-```
-    
-OR
-    
-  - Code: 404 NOT FOUND
+    ```
+
+  OR
   
-  Content:
-    
+  - Code: 404 NOT FOUND
+
+    Content:
+
     ```json
     {
       "message": "Can not find user with id 999."
-  }
-  ```
-    
-    
+    }
+    ```
+
+
 
 ### Edit workspace name
 
@@ -187,7 +187,7 @@ Edits workspace name. The owner of workspace can only edit its name. The name ca
 
   - Code: 200
     
-  Content: 
+    Content: 
     
     ```json
     {
@@ -196,43 +196,44 @@ Edits workspace name. The owner of workspace can only edit its name. The name ca
     }
     ```
 
+
 - **Error Response**
 
   - Code: 400 BAD REQUEST
     
-Content:
-    
+    Content:
+
     ```json
     {
       "message": "Workspace name should be less than 500 characters."
     }
-```
-    
-OR
-    
+    ```
+  
+  OR
+  
   - Code: 401 UNAUTHORIZED
   
-  Content:
-    
+    Content:
+          
     ```json
     {
       "message": "You are not the owner of workspace."
-  }
-  ```
-  
+    }
+    ```
+
   OR
-    
-- Code: 404 NOT FOUND
-    
-  Content:
-    
+  
+  - Code: 404 NOT FOUND
+  
+    Content:
+  
     ```json
     {
-    "message": "Can not find workspace with id 123."
+      "message": "Can not find workspace with id 123."
     }
-  ```
-    
-    
+    ```
+
+
 
 ### Add member to workspace
 
@@ -264,8 +265,8 @@ Adds member to workspace. The owner of workspace can only add member. Also, work
 
   - Code: 200
     
-  Content: 
-    
+    Content: 
+
     ```json
     {
       "addedMemberId": 9,
@@ -278,49 +279,49 @@ Adds member to workspace. The owner of workspace can only add member. Also, work
 
   - Code: 400 BAD REQUEST
     
-Content:
+    Content:
     
     ```json
     {
       "message": "Workspace can have 10 members at most."
     }
-```
+    ```
     
-OR
-    
+  OR
+  
   - Code: 401 UNAUTHORIZED
   
-  Content:
+    Content:
     
     ```json
     {
       "message": "You are not the owner of workspace."
-  }
-  ```
-  
+    }
+    ```
+
   OR
-    
-- Code: 404 NOT FOUND
-    
-  Content:
-    
+  
+  - Code: 404 NOT FOUND
+  
+    Content:
+  
     ```json
     {
-    "message": "Can not find user with id 999."
+      "message": "Can not find user with id 999."
     }
-```
-    
+    ```
+  
   OR
   
   - Code: 409 CONFLICT
     
-  Content:
+    Content:
     
     ```json
-  {
+    {
       "message": "That user is already added to workspace."
     }
-  ```
+    ```
     
     
 
@@ -341,7 +342,7 @@ Removes workspace member. The owner of workspace can only remove member.
   `workspaceId=[Integer]`
 
   `memberId=[Integer]`
-
+  
   `userId=[Interger]`
 
 - **Data Params**
@@ -352,8 +353,8 @@ Removes workspace member. The owner of workspace can only remove member.
 
   - Code: 200
     
-  Content: 
-    
+    Content: 
+
     ```json
     {
       "memberCount": 1,
@@ -365,28 +366,28 @@ Removes workspace member. The owner of workspace can only remove member.
 - **Error Response**
 
   - Code: 401 UNAUTHORIZED
-    
-Content:
+
+    Content:
     
     ```json
     {
       "message": "You are not the owner of workspace."
     }
-```
+    ```
     
-OR
-    
+  OR
+  
   - Code: 404 NOT FOUND
   
-  Content:
+    Content:
     
     ```json
     {
       "message": "That user is not added to workspace."
-  }
-  ```
-    
-    
+    }
+    ```
+
+
 
 ### Get workspace member list
 
@@ -394,7 +395,7 @@ Gets workspace member list.
 
 - **URL**
 
-  `/api/v1/workspaces/{workspaceId}/members?userId=`
+  `/api/v1/workspaces/{workspaceId}/members`
 
 - **Method**
 
@@ -404,8 +405,6 @@ Gets workspace member list.
 
   `workspaceId=[Integer]`
 
-  `userId=[Interger]`
-
 - **Data Params**
 
   None.
@@ -414,8 +413,8 @@ Gets workspace member list.
 
   - Code: 200
     
-  Content: 
-    
+    Content: 
+
     ```json
     {
       "workspaceId": 1,
@@ -434,7 +433,7 @@ Gets workspace member list.
 
   - Code: 404 NOT FOUND
     
-Content:
+    Content:
     
     ```json
     {

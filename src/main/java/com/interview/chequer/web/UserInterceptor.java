@@ -17,12 +17,14 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        long userId = Long.parseLong(request.getParameter("userId"));
+        if (!request.getMethod().equals("GET")) {
+            long userId = Long.parseLong(request.getParameter("userId"));
 
-        Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        long workspaceId = Long.parseLong((String) pathVariables.get("workspaceId"));
+            Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            long workspaceId = Long.parseLong((String) pathVariables.get("workspaceId"));
 
-        authorizationService.validateWorkspaceOwner(userId, workspaceId);
+            authorizationService.validateWorkspaceOwner(userId, workspaceId);
+        }
 
         return super.preHandle(request, response, handler);
     }

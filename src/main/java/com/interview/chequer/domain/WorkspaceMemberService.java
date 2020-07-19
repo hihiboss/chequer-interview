@@ -23,6 +23,10 @@ public class WorkspaceMemberService {
     }
 
     private void validateUser(WorkspaceMember workspaceMember) {
+        if (workspaceMember.getWorkspace().getOwnerId() == workspaceMember.getMember().getId()) {
+            throw new ValidationException("That user is the owner of workspace.");
+        }
+
         if (workspaceMemberRepository.existsByWorkspaceAndMember(workspaceMember.getWorkspace(), workspaceMember.getMember())) {
             throw new AlreadyExistingException("That user is already added to workspace.");
         }
